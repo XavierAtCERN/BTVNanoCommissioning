@@ -1,16 +1,9 @@
 
 # BTVNanoCommissioning
-[![Linting](https://github.com/XavierAtCERN/BTVNanoCommissioning/actions/workflows/python_linting.yml/badge.svg)](https://github.com/XavierAtCERN/BTVNanoCommissioning/actions/workflows/python_linting.yml)
-[![TTbar](https://github.com/XavierAtCERN/BTVNanoCommissioning/actions/workflows/ttbar_workflow.yml/badge.svg)](https://github.com/XavierAtCERN/BTVNanoCommissioning/actions/workflows/ttbar_workflow.yml)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-
 Repository for Commissioning studies in the BTV POG based on (custom) nanoAOD samples
 
 ## Requirements
 ### Setup 
-
-:heavy_exclamation_mark: suggested to install under `bash` environment
-
 ```
 # only first time 
 git clone git@github.com:cms-btv-pog/BTVNanoCommissioning.git 
@@ -27,19 +20,14 @@ bash Miniconda3-latest-Linux-x86_64.sh
 ```
 NOTE: always make sure that conda, python, and pip point to local Miniconda installation (`which conda` etc.).
 
-You can either use the default environment `base` or create a new one:
+You can either use the default environment`base` or create a new one:
 ```
 # create new environment with python 3.7, e.g. environment of name `coffea`
-conda create --name btv_nano_commissioning python=3.7
+conda create --name coffea python3.7
 # activate environment `coffea`
-conda activate btv_nano_commissioning
+conda activate coffea
 ```
-You could simply create the environment through the existing `env.yml` under your conda environment
-```
-conda env create -f env.yml -p ${conda_dir}/envs/coffea
-```
-
-Or install manually for the required packages, coffea, xrootd, and more:
+Install coffea, xrootd, and more:
 ```
 pip install git+https://github.com/CoffeaTeam/coffea.git #latest published release with `pip install coffea`
 conda install -c conda-forge xrootd
@@ -50,12 +38,6 @@ conda install -c anaconda bokeh
 conda install -c conda-forge 'fsspec>=0.3.3'
 conda install dask
 ```
-
-Once the environment is set up, compile the python package:
-```
-pip install -e .
-```
-
 ### Other installation options for coffea
 See https://coffeateam.github.io/coffea/installation.html
 ### Running jupyter remotely
@@ -111,13 +93,13 @@ python runner.py --workflow ${workflow} --json metadata/test.json
 - Dileptonic ttbar phase space : check performance for btag SFs, muon channel
 
 ```
-python runner.py --workflow (e)ttdilep_sf --json metadata/94X_doublemu_PFNano.json
+python runner.py --workflow ttdilep_sf --json metadata/94X_doublemu_PFNano.json
 ```
 
 - Semileptonic ttbar phase space : check performance for btag SFs, muon channel
 
 ```
-python runner.py --workflow (e)ttsemilep_sf --json metadata/94X_singlemu_PFNano.json
+python runner.py --workflow ttsemilep_sf --json metadata/94X_singlemu_PFNano.json
 ```
 
 </p>
@@ -130,26 +112,26 @@ python runner.py --workflow (e)ttsemilep_sf --json metadata/94X_singlemu_PFNano.
 - Dileptonic ttbar phase space : check performance for charm SFs, bjets enriched SFs, muon channel
 
 ```
-python runner.py --workflow (e)ctag_ttdilep_sf --json metadata/94X_doublemu_PFNano.json
+python runner.py --workflow ctag_ttdilep_sf --json metadata/94X_doublemu_PFNano.json
 ```
 
 
 - Semileptonic ttbar phase space : check performance for charm SFs, bjets enriched SFs, muon channel
 
 ```
-python runner.py --workflow (e)ctag_ttsemilep_sf --json metadata/94X_singlemu_PFNano.json
+python runner.py --workflow ctag_ttsemilep_sf --json metadata/94X_singlemu_PFNano.json
 ```
 
 - W+c phase space : check performance for charm SFs, cjets enriched SFs, muon  channel
 
 ```
-python runner.py --workflow (e)ctag_Wc_sf --json metadata/94X_singlemu_PFNano.json
+python runner.py --workflow ctag_ttdilep_sf --json metadata/94X_singlemu_PFNano.json
 ```
 
 - DY phase space : check performance for charm SFs, light jets enriched SFs, muon channel
 
 ```
-python runner.py --workflow (e)ctag_DY_sf --json ctag_DY_mu_PFNano.json
+python runner.py --workflow ctag_ttdilep_sf --json ctag_DY_mu_PFNano.json
 ```
 
 </p>
@@ -168,7 +150,6 @@ python runner.py --workflow valid --json {}
 
 </p>
 </details>
-
 
 
 ## Scale-out (Sites)
@@ -222,22 +203,13 @@ Use the `fetch.py` in `filefetcher`, the `$input_DAS_list` is the info extract f
 python fetch.py --input ${input_DAS_list} --output ${output_json_name} --site ${site}
 ```
 
-## Create compiled corretions file(`pkl.gz`)
-
-Compile correction pickle files for a specific JEC campaign by changing the dict of jet_factory, and define the output file name by passing it as argument to the python script:
-
-```
-python -m utils.compile_jec data/JME/UL17_106X/jec_compiled.pkl.gz
-```
-
-
 
 ## Plotting code
 
 - data/MC comparison code
 
 ```python
-python -m plotting.plotdataMC --lumi ${lumi} --phase ctag_ttdilep_sf --output ctag_ttdilep_sf (--discr zmass --log True/False --data data_runD)
+python plotdataMC.py --lumi ${lumi} --phase ctag_ttdilep_sf --output ctag_ttdilep_sf (--discr zmass --log True/False --data data_runD)
 # lumi in /pb
 # phase = workflow 
 # output coffea file output = hist_$output$.coffea 
@@ -249,7 +221,7 @@ python -m plotting.plotdataMC --lumi ${lumi} --phase ctag_ttdilep_sf --output ct
 - data/data, MC/MC comparison
 
 ```python
-python -m plotting.comparison --phase ctag_ttdilep_sf --output ctag_ttdilep_sf -ref 2017_runB --compared 2017_runC 2017_runD (--discr zmass --log True/False --sepflav True/False)
+python comparison.py --phase ctag_ttdilep_sf --output ctag_ttdilep_sf -ref 2017_runB --compared 2017_runC 2017_runD (--discr zmass --log True/False --sepflav True/False)
 # phase = workflow 
 # output coffea file output = hist_$output$.coffea 
 # ref = reference data/MC sample
